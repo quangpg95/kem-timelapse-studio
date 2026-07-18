@@ -17,3 +17,8 @@ build/
 *.mov
 *.MOV
 *.mp4
+
+# Deterministic and private acceptance inputs/results are local-only.
+tests/generated_media/
+tests/private_media/
+benchmark-results/

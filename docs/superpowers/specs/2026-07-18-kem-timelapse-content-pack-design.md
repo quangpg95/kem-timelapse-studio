@@ -2,7 +2,7 @@
 
 **Ngày:** 2026-07-18
 
-**Trạng thái:** Thiết kế đã được duyệt trong phiên brainstorming; chờ người dùng review bản viết
+**Trạng thái:** Đã được người dùng duyệt; sẵn sàng lập kế hoạch triển khai
 
 **Nền tảng đích:** macOS Apple Silicon, Mac M3 Pro từ 24 GB RAM
 **Nguồn chuẩn:** iPhone 15 Pro Max, 4K, 30 fps, SDR; một file liên tục hoặc thư mục nhiều clip; tổng thời lượng 1–3 giờ

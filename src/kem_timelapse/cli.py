@@ -7,6 +7,7 @@ from typing import Annotated, NoReturn
 
 import typer
 
+from kem_timelapse.composition import configure_cli as _configure_production_cli
 from kem_timelapse.domain.errors import ErrorCode, PipelineError
 from kem_timelapse.jobs.runner import JobRunner
 from kem_timelapse.storage.project_repository import ProjectRepository
@@ -102,6 +103,10 @@ def render(
         _runner_for_project(project_dir, overwrite=overwrite).render_pack()
     except Exception as error:
         _exit_for(error)
+
+
+# The CLI and benchmark must work without a desktop process having started first.
+_configure_production_cli()
 
 
 if __name__ == "__main__":

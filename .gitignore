@@ -11,9 +11,9 @@ build/
 *.log
 
 # Local media, generated caches, and rendered outputs must not enter Git.
-media/
-cache/
-outputs/
+/media/
+/cache/
+/outputs/
 *.mov
 *.MOV
 *.mp4

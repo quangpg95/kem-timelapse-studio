@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
 )
 
 from kem_timelapse.ui.analysis_page import AnalysisPage
+from kem_timelapse.ui.preview_page import PreviewPage
 from kem_timelapse.ui.source_page import SourcePage
 
 
@@ -41,8 +42,7 @@ class MainWindow(QMainWindow):
         self.stack = QStackedWidget(central)
         self.source_page = SourcePage(self.stack)
         self.analysis_page = AnalysisPage(self.stack)
-        self.preview_page = QWidget(self.stack)
-        self.preview_page.setObjectName("previewPage")
+        self.preview_page = PreviewPage(self.stack)
         self.stack.addWidget(self.source_page)
         self.stack.addWidget(self.analysis_page)
         self.stack.addWidget(self.preview_page)

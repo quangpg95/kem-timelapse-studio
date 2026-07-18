@@ -3,8 +3,11 @@ import threading
 from PySide6.QtCore import QThread, QTimer
 
 from kem_timelapse.domain.errors import ErrorCode, PipelineError
+from kem_timelapse.domain.models import Timeline, TimelineItem, Variant
+from kem_timelapse.editing.session import EditingSession
 from kem_timelapse.jobs.cancellation import CancellationToken
 from kem_timelapse.ui.controller import ERROR_COPY, DesktopController, user_message
+from kem_timelapse.ui.main_window import MainWindow
 from kem_timelapse.ui.worker import JobWorker
 
 
@@ -73,3 +76,45 @@ def test_close_requests_worker_cancellation(qtbot) -> None:
     controller.request_cancel()
 
     assert token.is_set()
+
+
+def test_controller_debounces_preview_timeline_persistence(qtbot) -> None:
+    class Repository:
+        def __init__(self) -> None:
+            self.saved: list[Timeline] = []
+
+        def save_timeline(self, timeline: Timeline) -> None:
+            self.saved.append(timeline)
+
+    repository = Repository()
+    window = MainWindow()
+    qtbot.addWidget(window)
+    controller = DesktopController(repository=repository)
+    controller.attach(window)
+    sessions = {
+        variant: EditingSession(
+            Timeline(
+                variant=variant,
+                revision=0,
+                audio_mode="asmr",
+                items=[
+                    TimelineItem(
+                        id=f"{variant.value}-item",
+                        role="body",
+                        segment_id="shared",
+                        trim_in_ms=0,
+                        trim_out_ms=1_000,
+                        speed=4,
+                    )
+                ],
+            )
+        )
+        for variant in Variant
+    }
+    controller.set_editing_sessions(sessions)
+    window.preview_page.select_variant(Variant.TIKTOK_FAST)
+    window.preview_page.timeline_view.selectRow(0)
+    window.preview_page.speed_combo.setCurrentText("2×")
+
+    qtbot.waitUntil(lambda: len(repository.saved) == 3, timeout=1_000)
+    assert repository.saved[0].items[0].speed == 2

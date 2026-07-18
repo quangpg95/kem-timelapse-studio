@@ -42,6 +42,7 @@ class PreviewPage(QWidget):
         self._segments: Mapping[str, Segment] = {}
         self._active_variant = Variant.TIKTOK_FAST
         self._manual_roi_required = False
+        self._render_available = True
         self._model: TimelineTableModel | None = None
 
         layout = QVBoxLayout(self)
@@ -150,6 +151,11 @@ class PreviewPage(QWidget):
         self.warning_banner.setText(warning)
         self._update_render_controls()
 
+    def set_render_available(self, available: bool) -> None:
+        """Apply controller-level gates without overriding the manual ROI safety gate."""
+        self._render_available = available
+        self._update_render_controls()
+
     def select_variant(self, variant: Variant) -> None:
         self._active_variant = variant
         self.variant_tabs.setCurrentIndex(list(Variant).index(variant))
@@ -237,6 +243,6 @@ class PreviewPage(QWidget):
     def _update_render_controls(self) -> None:
         # Confirmation is meaningful before timelines are loaded, so the ROI gate itself
         # remains independently testable; controller-level render wiring adds the timeline gate.
-        enabled = not self._manual_roi_required
+        enabled = not self._manual_roi_required and self._render_available
         self.render_first_button.setEnabled(enabled)
         self.render_pack_button.setEnabled(enabled)
